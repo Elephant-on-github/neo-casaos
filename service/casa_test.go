@@ -11,7 +11,17 @@ import (
 	"github.com/tidwall/gjson"
 
 	"github.com/IceWhaleTech/CasaOS/common"
+	"github.com/IceWhaleTech/CasaOS/pkg/cache"
 )
+
+// TestMain initializes the package-level Cache: it is normally assigned in
+// main.go, which is not part of the test binary.
+func TestMain(m *testing.M) {
+	if Cache == nil {
+		Cache = cache.Init()
+	}
+	os.Exit(m.Run())
+}
 
 func TestGetCasaosVersionFromVersionJSON(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -46,7 +56,7 @@ func TestGetCasaosVersionUnreachable(t *testing.T) {
 }
 
 func TestVersionJSONMatchesCommonVERSION(t *testing.T) {
-	b, err := os.ReadFile("../../version.json")
+	b, err := os.ReadFile("../version.json")
 	if err != nil {
 		t.Fatal(err)
 	}
