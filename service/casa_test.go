@@ -7,18 +7,20 @@ import (
 	"os"
 	"regexp"
 	"testing"
+	"time"
 
 	"github.com/tidwall/gjson"
 
 	"github.com/IceWhaleTech/CasaOS/common"
-	"github.com/IceWhaleTech/CasaOS/pkg/cache"
+	"github.com/patrickmn/go-cache"
 )
 
-// TestMain initializes the package-level Cache: it is normally assigned in
-// main.go, which is not part of the test binary.
+// TestMain initializes the package-level Cache without a cleanup janitor:
+// it is normally assigned in main.go, which is not part of the test binary,
+// and a cleanup janitor would trip the TestSearch goleak check.
 func TestMain(m *testing.M) {
 	if Cache == nil {
-		Cache = cache.Init()
+		Cache = cache.New(5*time.Minute, 0)
 	}
 	os.Exit(m.Run())
 }
