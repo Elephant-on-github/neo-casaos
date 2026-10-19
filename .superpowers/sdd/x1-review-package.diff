@@ -1,0 +1,20 @@
+ce20dc6 :arrow_up: Bump codecov Go version to match go 1.26 floor
+diff --git a/.github/workflows/codecov.yml b/.github/workflows/codecov.yml
+index 8f15635..0c70fc3 100644
+--- a/.github/workflows/codecov.yml
++++ b/.github/workflows/codecov.yml
+@@ -16,13 +16,13 @@ jobs:
+         uses: actions/checkout@v4
+         with:
+           fetch-depth: 0
+       - name: Set up Go
+         uses: actions/setup-go@v5
+         with:
+-          go-version: "1.20"
++          go-version: "1.26.3"
+       - name: generate OPENAPI
+         run: go generate
+       - name: Run coverage
+         run: go test -race -failfast -coverprofile=coverage.txt -covermode=atomic -v ./...
+       - name: Upload coverage to Codecov
+         uses: codecov/codecov-action@v3

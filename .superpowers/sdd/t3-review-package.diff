@@ -1,0 +1,7 @@
+60f436f :package: Update npm deps within semver ranges
+ package-lock.json | 2222 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 2222 insertions(+)
+=== package.json diff (MUST be empty — ranges unchanged, exact pin 2.5.2 preserved) ===
+=== lockfile: only package-lock.json added; top-level resolved deps ===
+ package-lock.json | 2222 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 2222 insertions(+)
