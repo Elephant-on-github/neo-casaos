@@ -221,15 +221,7 @@ Assets published at [Releases](https://github.com/Elephant-on-github/neo-casaos/
 
 ## Community 
 
-The word Casa comes from the Spanish word for "home". Project CasaOS originated as a pre-installed system for the crowdfunded product [ZimaBoard](https://www.zimaboard.com) on Kickstarter.
-
-After looking at many systems and software on the market, the team found no server system designed for home scenarios, sadly true.
-
-So, we set out to build this open-source project to develop CasaOS with our own hands, everyone in the community, and you.
-
-We believe that through community-driven collaborative innovation and open communication with global developers, we can reshape the digital home experience like never before.
-
-**A warm welcome for you to get help or share great ideas in the [Discord](https://discord.gg/knqAbbBbeX)!**
+CasaOS ("home" in Spanish) originated as the pre-installed system for [ZimaBoard](https://www.zimaboard.com). Built by the community, for the community — get help or share ideas on [Discord](https://discord.gg/knqAbbBbeX).
 
 [![Discord Card](https://discordapp.com/api/guilds/884667213326463016/widget.png?style=banner2)](https://discord.gg/knqAbbBbeX)
 
