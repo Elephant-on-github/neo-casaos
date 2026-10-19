@@ -11,6 +11,7 @@
 package v1
 
 import (
+	"encoding/base64"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -85,10 +86,19 @@ func PostSambaSharesCreate(ctx echo.Context) error {
 	}
 	for _, v := range shares {
 		shareDBModel := model2.SharesDBModel{}
-		shareDBModel.Anonymous = true
+		shareDBModel.Anonymous = v.Anonymous
 		shareDBModel.Path = v.Path
 		shareDBModel.Name = filepath.Base(v.Path)
-		os.Chmod(v.Path, 0o777)
+		if v.Anonymous {
+			os.Chmod(v.Path, 0o777)
+		} else {
+			if v.Password == "" {
+				return ctx.JSON(common_err.INVALID_PARAMS, model.Result{Success: common_err.INVALID_PARAMS, Message: common_err.GetMsg(common_err.INVALID_PARAMS), Data: "password is required for authenticated share"})
+			}
+			if err := service.MyService.Shares().EnsureShareUser(base64.StdEncoding.EncodeToString([]byte(v.Password))); err != nil {
+				return ctx.JSON(common_err.SERVICE_ERROR, model.Result{Success: common_err.SERVICE_ERROR, Message: common_err.GetMsg(common_err.SERVICE_ERROR), Data: err.Error()})
+			}
+		}
 		service.MyService.Shares().CreateShare(shareDBModel)
 	}
 

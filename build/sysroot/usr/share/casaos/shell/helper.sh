@@ -341,12 +341,13 @@ EditSmabaUserPassword(){
   $sudo_cmd smbpasswd $1
 }
 
+# $1:username $2:base64-encoded password (shell-safe; decoded here, never stored)
+# shortcut: passwords with trailing newlines are not supported (smbpasswd limitation)
 AddSmabaUser(){
-  $sudo_cmd useradd $1
-  $sudo_cmd smbpasswd -a $1 <<EOF
-    $2
-    $2
-EOF
+  $sudo_cmd useradd $1 2>/dev/null
+  pw=$(printf '%s' "$2" | base64 -d)
+  printf '%s\n%s\n' "$pw" "$pw" | $sudo_cmd smbpasswd -a -s $1 > /dev/null 2>&1
+  unset pw
 }
 
 # $1:username $2:host $3:share $4:port $5:mountpoint $6:password 
