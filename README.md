@@ -180,6 +180,70 @@ Before v0.3.3
 curl -fsSL https://get.icewhale.io/casaos-uninstall.sh | sudo bash
 ```
 
+## neo-casaos (this fork)
+
+This repository is **neo-casaos**, a fork of [IceWhaleTech/CasaOS](https://github.com/IceWhaleTech/CasaOS) maintained by [Elephant-on-github](https://github.com/Elephant-on-github). It keeps the upstream codebase and adds small, focused improvements while staying upgradeable from a stock CasaOS install.
+
+### What's different from upstream
+
+- **Revocable file share links** — generate a public URL for any file (`POST /v1/file/share`), revoke it later (`DELETE /v1/file/share?id=...`). Resolved via `GET /v1/file/share/:token` with no login required.
+- **Opt-in authentication for Samba shares** — new shares can require the dedicated `casaos-share` account instead of being world-readable (`anonymous: false`), with tighter file masks.
+- **Show hidden files toggle** in the file browser (UI), persisted in `localStorage`.
+- **Self-contained update channel** — releases come from this fork's GitHub Releases, and stock CasaOS installs can migrate with one command (see below).
+
+### Structure
+
+```
+Elephant-on-github/
+├── neo-casaos            (this repo)  — Go backend, SQL models, routes, build scripts
+│   ├── service/                     — business logic (shares, files, system, ...)
+│   ├── route/v1/                    — HTTP handlers (echo/v4)
+│   ├── model/                       — request/response models
+│   ├── pkg/                         — config, sqlite, samba, utils
+│   ├── build/                       — update.sh, migrate.sh, sysroot templates
+│   └── docs/                        — design docs & plans
+├── neo-casaos-ui         (Vue 3)     — frontend (file browser, settings, TopBar, UpdateModal)
+└── neo-casaos-gateway    (Go)        — reverse proxy / gateway
+```
+
+Runtime data flow:
+
+```
+┌────────────┐   HTTP    ┌──────────────┐   proxy   ┌──────────────┐
+│  Browser   │ ────────► │  Gateway     │ ────────► │  CasaOS      │
+│  (UI)      │ ◄──────── │  (Go)        │ ◄──────── │  (Go backend)│
+└────────────┘           └──────────────┘           └──────┬───────┘
+                                                           │
+                                                           ▼
+                                                    SQLite (casa.db)
+                                                    /var/lib/casaos
+                                                    /etc/samba
+```
+
+The backend reads its update channel from `/etc/casaos/casaos.conf` (`ServerApi` / `UpdateUrl`) and checks `version.json` on this repo's `main` branch to decide whether the "Upgrade Now" button should fire.
+
+### Migrating from stock CasaOS
+
+If you are running an official CasaOS install, you can move it to neo in one command:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Elephant-on-github/neo-casaos/main/build/migrate.sh | sudo bash
+```
+
+This installs the three neo components in place (data, databases, users and app containers are untouched), flips the update channel to this fork, and restarts CasaOS. From then on the existing **Settings → Update** button pulls neo releases from GitHub. See `docs/releasing.md` for the release model.
+
+### Updating neo
+
+After migrating, updates come through the UI's Upgrade Now button, or from a terminal:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Elephant-on-github/neo-casaos/main/build/update.sh | sudo bash
+```
+
+### Releases
+
+Release assets are published on this repo's [Releases](https://github.com/Elephant-on-github/neo-casaos/releases) page as `linux-<arch>-casaos-vX.Y.Z.tar.gz` (amd64 / arm64 / arm-7). The UI and gateway are released from their own repos (`neo-casaos-ui`, `neo-casaos-gateway`).
+
 ## Community 
 
 The word Casa comes from the Spanish word for "home". Project CasaOS originated as a pre-installed system for the crowdfunded product [ZimaBoard](https://www.zimaboard.com) on Kickstarter.
