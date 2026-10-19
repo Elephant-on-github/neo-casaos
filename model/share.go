@@ -14,4 +14,6 @@ type Shares struct {
 	ID        uint   `json:"id"`
 	Anonymous bool   `json:"anonymous"`
 	Path      string `json:"path"`
+	// Password is used only when Anonymous is false; it is passed to smbpasswd, never stored.
+	Password string `json:"password,omitempty"`
 }

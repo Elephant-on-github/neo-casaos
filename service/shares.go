@@ -31,7 +31,13 @@ type SharesService interface {
 	UpdateConfigFile()
 	InitSambaConfig()
 	DeleteShareByPath(path string)
+	// EnsureShareUser creates/updates the samba account used by authenticated shares.
+	// passwordB64 is base64-encoded to keep it shell-safe; it is never stored.
+	EnsureShareUser(passwordB64 string) error
 }
+
+// ShareUserName is the samba account that must authenticate to reach non-anonymous shares.
+const ShareUserName = "casaos-share"
 
 type sharesStruct struct {
 	db *gorm.DB
@@ -69,31 +75,46 @@ func (s *sharesStruct) DeleteShare(id string) {
 	s.UpdateConfigFile()
 }
 
+// buildShareConfig renders the smb.casa.conf stanza for one share.
+// Anonymous shares stay guest-accessible (existing behavior); authenticated shares
+// require the ShareUserName account and drop the world-writable masks.
+func buildShareConfig(share model2.SharesDBModel) string {
+	dirName := filepath.Base(share.Path)
+	access := "public = Yes\nguest ok = Yes\ncreate mask = 0777\ndirectory mask = 0777"
+	if !share.Anonymous {
+		// shortcut: single shared account for every authenticated share, upgrade to
+		// per-share users when there is demand
+		access = "public = No\nguest ok = No\nvalid users = " + ShareUserName + "\ncreate mask = 0664\ndirectory mask = 0775"
+	}
+	return `
+[` + dirName + `]
+comment = CasaOS share ` + dirName + `
+` + access + `
+path = ` + share.Path + `
+browseable = Yes
+read only = No
+force user = root
+
+`
+}
+
 func (s *sharesStruct) UpdateConfigFile() {
 	shares := []model2.SharesDBModel{}
 	s.db.Select("anonymous,path").Find(&shares)
 	// generated config file
 	configStr := ""
 	for _, share := range shares {
-		dirName := filepath.Base(share.Path)
-		configStr += `
-[` + dirName + `]
-comment = CasaOS share ` + dirName + `
-public = Yes
-path = ` + share.Path + `
-browseable = Yes
-read only = No
-guest ok = Yes
-create mask = 0777
-directory mask = 0777
-force user = root
-
-`
+		configStr += buildShareConfig(share)
 	}
 	// write config file
 	file.WriteToPath([]byte(configStr), "/etc/samba", "smb.casa.conf")
 	// restart samba
 	command.OnlyExec("source " + config.AppInfo.ShellPath + "/helper.sh ;RestartSMBD")
+}
+
+func (s *sharesStruct) EnsureShareUser(passwordB64 string) error {
+	_, err := command.OnlyExec("source " + config.AppInfo.ShellPath + "/helper.sh ;AddSmabaUser " + ShareUserName + " " + passwordB64)
+	return err
 }
 
 func (s *sharesStruct) InitSambaConfig() {
