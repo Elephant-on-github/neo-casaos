@@ -33,6 +33,7 @@ var (
 type Repository interface {
 	Casa() CasaService
 	Connections() ConnectionsService
+	FileShare() FileShareService
 	Gateway() external.ManagementService
 	Health() HealthService
 	Notify() NotifyServer
@@ -54,6 +55,7 @@ func NewService(db *gorm.DB, RuntimePath string) Repository {
 	return &store{
 		casa:        NewCasaService(),
 		connections: NewConnectionsService(db),
+		fileShare:   NewFileShareService(db),
 		gateway:     gatewayManagement,
 		notify:      NewNotifyService(db),
 		rely:        NewRelyService(db),
@@ -76,6 +78,7 @@ type store struct {
 	system      SystemService
 	shares      SharesService
 	connections ConnectionsService
+	fileShare   FileShareService
 	gateway     external.ManagementService
 	storage     StorageService
 	health      HealthService
@@ -100,6 +103,10 @@ func (c *store) Gateway() external.ManagementService {
 
 func (s *store) Connections() ConnectionsService {
 	return s.connections
+}
+
+func (s *store) FileShare() FileShareService {
+	return s.fileShare
 }
 
 func (s *store) Shares() SharesService {

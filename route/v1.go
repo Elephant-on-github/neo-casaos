@@ -39,6 +39,9 @@ func InitV1Router() http.Handler {
 		return ctx.String(200, "pong")
 	})
 	e.GET("/v1/recover/:type", v1.GetRecoverStorage)
+	// Public file-share resolve route. Registered on the root (outside v1Group) so it
+	// bypasses the JWT middleware; the share token is the only credential required.
+	e.GET("/v1/file/share/:token", v1.GetPublicFileShare)
 	v1Group := e.Group("/v1")
 	//	e.Any("/v1/test", v1.CheckNetwork)
 	v1Group.Use(echo_middleware.JWTWithConfig(echo_middleware.JWTConfig{
@@ -122,6 +125,10 @@ func InitV1Router() http.Handler {
 			// v1FileGroup.GET("/download", v1.UserFileDownloadCommonService)
 			v1FileGroup.GET("/ws", v1.ConnectWebSocket)
 			v1FileGroup.GET("/peers", v1.GetPeers)
+
+			v1FileGroup.POST("/share", v1.PostCreateFileShare)
+			v1FileGroup.GET("/share", v1.ListFileShares)
+			v1FileGroup.DELETE("/share", v1.DeleteFileShare)
 		}
 		v1CloudGroup := v1Group.Group("/cloud")
 		v1CloudGroup.Use()
