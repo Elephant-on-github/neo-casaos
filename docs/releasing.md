@@ -25,6 +25,27 @@ commit on this repo.
 - Never merge `build/*.sh` changes to main before the pinned release
   assets exist — main is what the raw URLs serve to every migrated box.
 
+## The three install paths
+
+| Path | Script | Who uses it | What it does |
+|---|---|---|---|
+| Fresh install | `build/install.sh` | new machine | Installs the full stack: the three neo components + the six unforked CasaOS services from upstream. Sets `UpdateUrl` to neo. Installs `casaos-uninstall`. |
+| From stock CasaOS | `build/migrate.sh` | existing CasaOS install | Flips `UpdateUrl` to neo, restarts the backend, then delegates to `update.sh`. Data, databases and apps untouched. |
+| neo → neo | `build/update.sh` | already on neo | Swaps the three neo components only. Restarted services: `casaos-gateway`, `casaos` (last). |
+
+Raw URLs (served from `main`):
+
+```
+https://raw.githubusercontent.com/Elephant-on-github/neo-casaos/main/build/install.sh
+https://raw.githubusercontent.com/Elephant-on-github/neo-casaos/main/build/migrate.sh
+https://raw.githubusercontent.com/Elephant-on-github/neo-casaos/main/build/update.sh
+https://raw.githubusercontent.com/Elephant-on-github/neo-casaos/main/build/uninstall.sh
+```
+
+`install.sh` and `update.sh` carry their own version pins. `migrate.sh` has no
+pins — it calls `update.sh`, so it always installs whatever is currently
+pinned.
+
 ## Per-release steps
 
 1. Pre-tag commit: bump `VERSION`, `version.json`, and the `build/update.sh`
