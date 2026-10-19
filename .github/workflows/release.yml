@@ -7,19 +7,60 @@ on:
 
 permissions:
   contents: write
+
 jobs:
-  call-workflow-passing-data:
-    uses: IceWhaleTech/github/.github/workflows/go_release.yml@main
-    with:
-      project-name: CasaOS
-      file-name: casaos
-    secrets:
-      GoogleID: ${{ secrets.GoogleID }} 
-      GoogleSecret: ${{ secrets.GoogleSecret }}
-      DropboxKey: ${{ secrets.DropboxKey }}
-      DropboxSecret: ${{ secrets.DropboxSecret }}
-      OneDriveID: ${{ secrets.OneDriveID }}
-      OneDriveSecret: ${{ secrets.OneDriveSecret }}
-      OneDrivePublic: ${{ secrets.OneDrivePublic }}
-      OSS_KEY_ID: ${{ secrets.OSS_KEY_ID }}
-      OSS_KEY_SECRET: ${{ secrets.OSS_KEY_SECRET }}
+  goreleaser:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Install dependencies for cross-compiling
+        run: |
+          sudo apt update || true
+          sudo apt-get --no-install-recommends -y install \
+            upx \
+            libc6-dev-amd64-cross \
+            gcc-aarch64-linux-gnu libc6-dev-arm64-cross \
+            gcc-arm-linux-gnueabihf libc6-dev-armhf-cross \
+            gcc-riscv64-linux-gnu libc6-dev-riscv64-cross
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Add GitHub Key
+        run: |
+          export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          git config --global url."https://${{ secrets.GITHUB_TOKEN }}@github.com".insteadOf "https://github.com"
+
+      - name: Update submodule
+        run: git submodule update --init --recursive
+
+      - name: Fetch all tags
+        run: git fetch --force --tags
+
+      - name: Get version
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.3'
+          cache-dependency-path: |
+            go.sum
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v4
+        with:
+          distribution: goreleaser
+          version: latest
+          args: --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GoogleID: ${{ secrets.GoogleID }}
+          GoogleSecret: ${{ secrets.GoogleSecret }}
+          DropboxKey: ${{ secrets.DropboxKey }}
+          DropboxSecret: ${{ secrets.DropboxSecret }}
+          OneDriveID: ${{ secrets.OneDriveID }}
+          OneDriveSecret: ${{ secrets.OneDriveSecret }}
+          OneDrivePublic: ${{ secrets.OneDrivePublic }}
