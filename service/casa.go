@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/IceWhaleTech/CasaOS/model"
-	"github.com/IceWhaleTech/CasaOS/pkg/config"
 	"github.com/IceWhaleTech/CasaOS/pkg/utils/httper"
 	"github.com/tidwall/gjson"
 )
@@ -15,6 +14,9 @@ type CasaService interface {
 }
 
 type casaService struct{}
+
+// versionJSONURL is neo's release channel: version.json on main, bumped with every release.
+var versionJSONURL = "https://raw.githubusercontent.com/Elephant-on-github/neo-casaos/main/version.json"
 
 /**
  * @description: get remote version
@@ -33,7 +35,7 @@ func (o *casaService) GetCasaosVersion() model.Version {
 		}
 	}
 
-	v := httper.OasisGet(config.ServerInfo.ServerApi + "/v1/sys/version")
+	v := httper.Get(versionJSONURL, nil)
 	data := gjson.Get(v, "data")
 	json2.Unmarshal([]byte(data.String()), &version)
 
