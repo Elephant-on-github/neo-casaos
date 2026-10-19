@@ -57,19 +57,26 @@ where they are.
 
 ## Install
 
+### On a fresh machine
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Elephant-on-github/neo-casaos/main/build/install.sh | sudo bash
+```
+
+Installs the full stack: the three neo components from this fork's releases
+plus the CasaOS services that are not forked yet (message-bus, user-service,
+local-storage, app-management, CLI, app store) from upstream. Sets the update
+channel to neo, so the **Settings → Update** button pulls neo releases
+afterwards.
+
 ### On an existing CasaOS install
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/Elephant-on-github/neo-casaos/main/build/migrate.sh | sudo bash
 ```
 
-Installs the neo components in place (data, databases and apps untouched),
-points the update channel at this fork, and restarts CasaOS. After that the
-existing **Settings → Update** button pulls neo releases.
-
-### On a fresh machine
-
-Install upstream CasaOS first, then run the migration command above.
+Swaps in the neo components in place (data, databases and apps untouched),
+points the update channel at this fork, and restarts CasaOS.
 
 ## Update
 
