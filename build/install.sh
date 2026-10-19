@@ -58,6 +58,8 @@ readonly UNAME_U
 
 readonly CASA_CONF_PATH=/etc/casaos/casaos.conf
 readonly UPDATE_URL="https://raw.githubusercontent.com/Elephant-on-github/neo-casaos/main/build/update.sh"
+readonly CASA_UNINSTALL_URL="https://raw.githubusercontent.com/Elephant-on-github/neo-casaos/main/build/uninstall.sh"
+readonly CASA_UNINSTALL_PATH=/usr/bin/casaos-uninstall
 
 TARGET_ARCH=""
 TMP_ROOT=/tmp/casaos-installer
@@ -354,6 +356,21 @@ Set_Neo_Update_Channel() {
     Show 0 "Update channel set to neo."
 }
 
+Install_Uninstall_Script() {
+    # The uninstall script is vendored in this repo (build/uninstall.sh) so it
+    # cannot rot when upstream moves on, and it reads the manifest we write.
+    ${sudo_cmd} curl -fsSLk "${CASA_UNINSTALL_URL}" >"${TMP_DIR}/casaos-uninstall" || {
+        Show 3 "Failed to download the uninstall script, skipping."
+        return
+    }
+    ${sudo_cmd} cp -rf "${TMP_DIR}/casaos-uninstall" "${CASA_UNINSTALL_PATH}" || {
+        Show 3 "Failed to install the uninstall script, skipping."
+        return
+    }
+    ${sudo_cmd} chmod +x "${CASA_UNINSTALL_PATH}"
+    Show 0 "Uninstall script installed (${CASA_UNINSTALL_PATH})."
+}
+
 DownloadAndInstallCasaOS() {
     ${sudo_cmd} rm -rf "${TMP_ROOT}"
     ${sudo_cmd} mkdir -p "${TMP_ROOT}" || Show 1 "Failed to create temporary directory"
@@ -416,6 +433,8 @@ DownloadAndInstallCasaOS() {
     fi
 
     Set_Neo_Update_Channel
+
+    Install_Uninstall_Script
 
     Install_Rclone
 
