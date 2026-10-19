@@ -19,6 +19,11 @@ func newFileShareTestDB(t *testing.T) *gorm.DB {
 	if err != nil {
 		t.Fatalf("open sqlite: %v", err)
 	}
+	t.Cleanup(func() {
+		if sqlDB, err := db.DB(); err == nil {
+			sqlDB.Close()
+		}
+	})
 	if err := db.AutoMigrate(&model.FileShareDBModel{}); err != nil {
 		t.Fatalf("migrate: %v", err)
 	}
