@@ -12,7 +12,7 @@
 #   untouched; upstream-only services are left alone.
 #   Usage:
 #
-#   	  curl -fsSL https://raw.githubusercontent.com/Elephant-on-github/neo-casaos/main/build/migrate.sh | bash
+#   	  curl -fsSL https://raw.githubusercontent.com/Elephant-on-github/neo-casaos/main/build/migrate.sh | sudo bash
 #
 #   Rollback: run the official update (https://get.casaos.io/update), then
 #   revert the UpdateUrl line in /etc/casaos/casaos.conf.
@@ -22,6 +22,7 @@
 #
 
 set -e
+set -o pipefail
 
 ###############################################################################
 # GLOBALS                                                                     #
@@ -63,6 +64,12 @@ if grep -qE '^\s*UpdateUrl\s*=' "${CONF}"; then
 else
     ${sudo_cmd} sed -i "/^\[server\]/a UpdateUrl = ${UPDATE_URL}" "${CONF}"
 fi
+
+# The backend reads UpdateUrl at startup only: restart it so the running
+# process already targets the neo channel even if the install below fails
+# (that is what makes the next Update press self-heal).
+echo "- INFO Restarting casaos service..."
+${sudo_cmd} systemctl restart casaos.service
 
 echo "- INFO Installing neo components (this can take a few minutes)..."
 curl -fsSL "${UPDATE_URL}" | bash
