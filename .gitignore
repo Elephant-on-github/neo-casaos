@@ -41,3 +41,6 @@ CasaOS
 
 # System Files
 .DS_Store
+
+# Node (npm SDK tooling)
+node_modules/
