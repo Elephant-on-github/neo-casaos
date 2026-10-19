@@ -9,7 +9,10 @@ import (
 
 func TestSearch(t *testing.T) {
 	logger.LogInitConsoleOnly()
-	goleak.VerifyNone(t)
+	// CasaOS-Common/external pulls in orca-zhang/ecache, which starts a
+	// long-lived janitor goroutine in its package init(). It is an intentional
+	// background daemon, not a leak in this test, so ignore it explicitly.
+	goleak.VerifyNone(t, goleak.IgnoreAnyFunction("github.com/orca-zhang/ecache.init.0.func1"))
 
 	if d, e := NewOtherService().Search("test"); e != nil || d == nil {
 		t.Error("then test search error", e)
