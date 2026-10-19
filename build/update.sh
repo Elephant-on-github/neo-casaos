@@ -4,7 +4,7 @@
 #
 #   GitHub: https://github.com/Elephant-on-github/neo-casaos
 #   Issues: https://github.com/Elephant-on-github/neo-casaos/issues
-#   Requires: bash, wget, tar, systemctl
+#   Requires: bash, wget, tar, systemctl (GNU coreutils: realpath, cut, sort, mktemp -p)
 #
 #   This script updates the three neo-owned CasaOS components (backend,
 #   gateway, UI) to the pinned release versions below. Other CasaOS
@@ -151,6 +151,7 @@ DownloadAndInstallCasaOS() {
     find "${SYSROOT_DIR}" -type f | ${sudo_cmd} cut -c "${#SYSROOT_DIR}-" | ${sudo_cmd} cut -c 2- | ${sudo_cmd} tee "${NEW_MANIFEST}" >/dev/null || Show 1 "Failed to generate manifest"
     if [ -f "${MANIFEST_FILE}" ]; then
         ${sudo_cmd} sort -u "${MANIFEST_FILE}" "${NEW_MANIFEST}" -o "${MANIFEST_FILE}" || Show 1 "Failed to merge manifest"
+        ${sudo_cmd} rm -f "${NEW_MANIFEST}"
     else
         ${sudo_cmd} mkdir -p "$(dirname "${MANIFEST_FILE}")"
         ${sudo_cmd} mv "${NEW_MANIFEST}" "${MANIFEST_FILE}"

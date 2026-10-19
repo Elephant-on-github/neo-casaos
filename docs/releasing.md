@@ -10,11 +10,18 @@ commit on this repo.
   compares version segments with `strconv.Atoi`; a suffixed tag like
   `v0.4.16-neo` parses a segment to 0 and corrupts the update check
   (permanent "update available" banner).
-- Every release-tag commit bumps together, in one commit:
+- Backend release-tag commits bump together, in one commit:
   - `common/constants.go` `VERSION`
   - `version.json` `data.version` (repo root; a CI test enforces it
     matches `common.VERSION`)
-  - the pin block in `build/update.sh`
+  - the backend pin in `build/update.sh` (the `neo-casaos` package URL)
+- Gateway-only and UI-only release-tag commits bump **only** the
+  corresponding pin in `build/update.sh` (the `neo-casaos-gateway` or
+  `linux-all-casaos` package URL). `VERSION` and `version.json` are
+  backend-only and are NOT touched by gateway/UI-only releases.
+- `FORK_BASE` in `build/migrate.sh` is bumped whenever the stock CasaOS
+  version the neo fork is based on changes (not tied to a specific
+  component release; bumped alongside the relevant pin when stock moves).
 - Never merge `build/*.sh` changes to main before the pinned release
   assets exist — main is what the raw URLs serve to every migrated box.
 
@@ -51,4 +58,5 @@ commit on this repo.
 ## First releases
 
 Backend `v0.4.16`, gateway `v0.4.10`, UI `v0.4.26` — these are the
-versions pinned in `build/update.sh` as shipped.
+versions pinned in `build/update.sh` as shipped. `FORK_BASE` is `0.4.15`
+(the last stock CasaOS release before the neo fork diverged).

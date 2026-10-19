@@ -5,6 +5,7 @@
 #   GitHub: https://github.com/Elephant-on-github/neo-casaos
 #   Issues: https://github.com/Elephant-on-github/neo-casaos/issues
 #   Requires: bash, grep, sed, sort, curl, casaos (existing install)
+#   GNU coreutils: sort -V, sed -i (no suffix arg). All stock targets are GNU.
 #
 #   This script moves an existing stock CasaOS install to the neo release
 #   channel: it points CasaOS's update mechanism at the neo update script,
@@ -21,6 +22,7 @@
 #   If using curl, we recommend using the -fsSL flags.
 #
 
+export PATH=/usr/sbin:$PATH
 set -e
 set -o pipefail
 
