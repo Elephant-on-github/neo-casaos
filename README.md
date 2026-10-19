@@ -1,243 +1,107 @@
-# CasaOS - Your Personal Cloud 
-<!-- Readme i18n links -->
-<!-- > English | [中文](#) | [Français](#) -->
+# neo-casaos
+
+> A maintained fork of [CasaOS](https://github.com/IceWhaleTech/CasaOS) — the personal cloud for your home.
 
 <p align="center">
-    <!-- CasaOS Banner -->
-    <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/IceWhaleTech/logo/main/casaos/casaos_banner_dark_night_800x300.png">
-        <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/IceWhaleTech/logo/main/casaos/casaos_banner_twilight_blue_800x300.png">
-        <img alt="CasaOS" src="https://raw.githubusercontent.com/IceWhaleTech/logo/main/casaos/casaos_banner_twilight_blue_800x300.png">
-    </picture>
+    <!-- neo banner: drop your own artwork here (docs/banner-light.png, docs/banner-dark.png) -->
+    <!-- <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="docs/banner-dark.png">
+        <source media="(prefers-color-scheme: light)" srcset="docs/banner-light.png">
+        <img alt="neo-casaos" src="docs/banner-light.png">
+    </picture> -->
     <br/>
-    <i>Connect with the community, establish autonomy, reduce the cost of SaaS, and MAXIMIZE the potential for a personalized copilot.</i>
-    <br/>
-    <br/>
-    <!-- CasaOS Badges -->
-    <a href="https://github.com/IceWhaleTech/CasaOS" target="_blank">
-        <img alt="CasaOS Version" src="https://img.shields.io/github/v/release/IceWhaleTech/CasaOS?color=162453&style=flat-square&label=CasaOS" />
+    <a href="https://github.com/Elephant-on-github/neo-casaos/releases" target="_blank">
+        <img alt="neo-casaos version" src="https://img.shields.io/github/v/release/Elephant-on-github/neo-casaos?color=162453&style=flat-square&label=release" />
     </a>
-    <a href="https://github.com/IceWhaleTech/CasaOS/blob/main/LICENSE" target="_blank">
-        <img alt="CasaOS License" src="https://img.shields.io/github/license/IceWhaleTech/CasaOS?color=162453&style=flat-square&label=License" />
+    <a href="https://github.com/Elephant-on-github/neo-casaos/blob/main/LICENSE" target="_blank">
+        <img alt="License" src="https://img.shields.io/github/license/Elephant-on-github/neo-casaos?color=162453&style=flat-square&label=license" />
     </a>
-    <a href="https://github.com/IceWhaleTech/CasaOS/pulls" target="_blank">
-        <img alt="CasaOS Pull Requests" src="https://img.shields.io/github/issues-pr/IceWhaleTech/CasaOS?color=162453&style=flat-square&label=PRs" />
+    <a href="https://github.com/Elephant-on-github/neo-casaos/pulls" target="_blank">
+        <img alt="Pull requests" src="https://img.shields.io/github/issues-pr/Elephant-on-github/neo-casaos?color=162453&style=flat-square&label=PRs" />
     </a>
-    <a href="https://github.com/IceWhaleTech/CasaOS/issues" target="_blank">
-        <img alt="CasaOS Issues" src="https://img.shields.io/github/issues/IceWhaleTech/CasaOS?color=162453&style=flat-square&label=Issues" />
+    <a href="https://github.com/Elephant-on-github/neo-casaos/issues" target="_blank">
+        <img alt="Issues" src="https://img.shields.io/github/issues/Elephant-on-github/neo-casaos?color=162453&style=flat-square&label=issues" />
     </a>
-    <a href="https://codecov.io/gh/IceWhaleTech/CasaOS" > 
-    <img src="https://codecov.io/gh/IceWhaleTech/CasaOS/branch/main/graph/badge.svg?token=l9uMKGlkxM"/> 
+    <a href="https://github.com/Elephant-on-github/neo-casaos/stargazers" target="_blank">
+        <img alt="Stars" src="https://img.shields.io/github/stars/Elephant-on-github/neo-casaos?color=162453&style=flat-square&label=stars" />
     </a>
-    <a href="https://github.com/IceWhaleTech/CasaOS/stargazers" target="_blank">
-        <img alt="CasaOS Stargazers" src="https://img.shields.io/github/stars/IceWhaleTech/CasaOS?color=162453&style=flat-square&label=Stars" />
+    <a href="https://codecov.io/gh/Elephant-on-github/neo-casaos" target="_blank">
+        <img alt="Coverage" src="https://codecov.io/gh/Elephant-on-github/neo-casaos/branch/main/graph/badge.svg" />
     </a>
-    <!-- <a href="https://github.com/IceWhaleTech/CasaOS/releases" target="_blank">
-    <img alt="CasaOS Downloads" src="https://img.shields.io/github/downloads/IceWhaleTech/CasaOS/total?color=162453&style=flat-square" />
-    </a> -->
-    <br/>
-    <!-- CasaOS Community -->
-    <a href="https://discord.gg/knqAbbBbeX" target="_blank">
-        <img alt="IceWhale Discord" src="https://img.shields.io/discord/884667213326463016?color=162453&style=flat-square&label=Discord&logo=discord&logoColor=fff" />
-    </a>
-    <a href="https://github.com/IceWhaleTech/CasaOS/discussions" target="_blank">
-        <img alt="CasaOS GitHub Discussions" src="https://img.shields.io/github/discussions/IceWhaleTech/CasaOS?color=162453&style=flat-square&label=Discussions&logo=github" />
-    </a>
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-    <a href="#credits">
-        <img alt="All Contributors" src="https://img.shields.io/static/v1?label=All%20Contributors&message=15&color=162453&style=flat-square&logo=Handshake&logoColor=fff" />
-    </a>
-    <!-- CasaOS YouTube -->
-    <a href="https://www.youtube.com/channel/UC2zMrUYT17AJhIl9XWZzT8g" target="_blank">
-        <img alt="YouTube Tutorial Views" src="https://img.shields.io/youtube/channel/views/UC2zMrUYT17AJhIl9XWZzT8g?style=flat-square&logo=youtube&logoColor=red&label=YouTube%20Tutorial%20Views" />
-    </a>
-    <br/>    
-    <a href="http://bit.ly/45JQIiL" target="_blank">
-        <img alt="twitter ZimaSpace" src="https://img.shields.io/twitter/follow/ZimaSpace?style=flat-square&logo=X&label=Contact%20Us%20%40%20ZimaSpace&labelColor=555&color=555" />
-    </a>
-    <a href="http://bit.ly/4lgHj7V" target="_blank">
-        <img alt="facebook ZimaSpace" src="https://img.shields.io/badge/ZimaSpace-1877F2?style=flat-square&logo=Facebook&logoColor=fff&label=Contact%20Us&labelColor=555&color=162453" />
-    </a>
-    <br/>
-    <!-- CasaOS Links -->
-    <a href="https://www.casaos.io" target="_blank">Website</a> |
-    <a href="http://demo.casaos.io" target="_blank">Demo</a> |
-    <a href="https://github.com/IceWhaleTech/CasaOS" target="_blank">GitHub</a>
-    <br/>
-    <br/>
-    <!-- CasaOS Snapshots -->
-    <kbd>
-      <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="snapshot-dark.jpg">
-          <source media="(prefers-color-scheme: light)" srcset="snapshot-light.jpg">
-          <img alt="CasaOS Snapshot" src="snapshot-light.jpg">
-      </picture>
-    </kbd>
 </p>
 
-## Why do you need Personal Cloud?
+## What is this
 
-In 2020, the team noticed three important trends:
-- The cost of computing power and storage was decreasing fast.
-- A part of cloud computing was moving towards edge computing.
-- The issue of consumer data asset ownership and attribution had been ignored.
+Upstream CasaOS has gone quiet. This fork keeps it running and ships the fixes
+users actually ask for — without waiting on a new release cycle, and without
+depending on anyone's cloud services to keep working.
 
-Based on these trends, the team proposed a thought experiment internally: what if personal clouds were available under $100 in next five years? This personal cloud would provide a low-cost data collaboration solution as a personal data center, storing and managing data for creators and small organizations. A distributed collaborative computing network can be formed by personal servers located around the world. It could also control and connect all smart devices, providing cross-ecosystem local intelligent services.
-
-Furthermore, the personal cloud could combine personal data to train personalized AI assistants. The idea is that this technology would be an effective way to solve the issue of consumer data asset ownership and , as well as provide a more affordable and efficient computing solution for individuals and small organizations.
-
-> If you think what we are doing is valuable. Please **give us a star ⭐** and **fork it 🤞**!
-
-## Features
-
-- Friendly UI designed for home scenarios
-  - No code, no forms, intuitive, design for humanity
-- Multiple hardware and base system support
-  - ZimaBoard, NUC, RPi, old computers, whatever is available.
-- Selected apps in the app store, one-click installation
-  - Nextcloud, HomeAssistant, AdGuard, Jellyfin, *arr and more!
-- Easily install numerous Docker apps
-  - Over 100,000 apps from the Docker ecosystem can be easily installed
-- Elegant drive and file management
-  - What you see is what you get. No technical background required.
-- Well-designed system/app widgets
-  - What you care about, at a glance. Resource usage, app status, and more!
-
-## Getting Started
-
-CasaOS fully supports ZimaBoard, Intel NUC, and Raspberry Pi. Also, more computers and development boards and fully compatible with Ubuntu, Debian, Raspberry Pi OS, and CentOS with one-liner installation.
-
-### Hardware Compatibility
-
-- amd64 / x86-64
-- arm64
-- armv7
-
-### System Compatibility
-
-Official Support
-- Debian 12 (✅ Tested, Recommended)
-- Ubuntu Server 20.04 (✅ Tested)
-- Raspberry Pi OS (✅ Tested)
-
-Community Support
-- Elementary 6.1 (✅ Tested)
-- Armbian 22.04 (✅ Tested)
-- Alpine (🚧 Not Fully Tested Yet)
-- OpenWrt (🚧 Not Fully Tested Yet)
-- ArchLinux (🚧 Not Fully Tested Yet)
-
-### Quick Setup CasaOS
-
-Freshly install a system from the list above and run this command:
-
-```sh
-wget -qO- https://get.casaos.io | sudo bash
-```
-
-or
-
-```sh
-curl -fsSL https://get.casaos.io | sudo bash
-```
-
-### Update CasaOS
-
-CasaOS can be updated from the User Interface (UI), via `Settings ... Update`.  
-
-Alternatively it can be updated from a terminal session.  To update from a terminal session, it must be done either from a secure shell (ssh) session to the device or from a directly attached terminal and keyboard to the device running CasaOS, this cannot be done from the terminal via the CasaOS User Interface (UI).  To update to the latest release of CasaOS from a terminal session run this command:
-
-```sh
-wget -qO- https://get.casaos.io/update | sudo bash
-```
-
-or
-
-```sh
-curl -fsSL https://get.casaos.io/update | sudo bash
-```
-
-To determine version of CasaOS from a terminal session run this command:
-
-```sh
-casaos -v
-```
-
-
-
-### Uninstall CasaOS
-
-
-v0.3.3 or newer
-
-```sh
-casaos-uninstall
-```
-
-Before v0.3.3
-
-```sh
-curl -fsSL https://get.icewhale.io/casaos-uninstall.sh | sudo bash
-```
-
-## neo-casaos (this fork)
-
-This is **neo-casaos**, a fork of [IceWhaleTech/CasaOS](https://github.com/IceWhaleTech/CasaOS) by [Elephant-on-github](https://github.com/Elephant-on-github). It adds small, focused improvements while staying upgradeable from a stock CasaOS install.
+It is a drop-in replacement: your data, apps, shares and settings stay exactly
+where they are.
 
 ### What's different
 
-- **Revocable file share links** — generate a public URL for any file, revoke later
-- **Opt-in SMB authentication** — shares can require the `casaos-share` account
-- **Show hidden files toggle** in the file browser (UI)
-- **Self-contained update channel** — releases from this fork's GitHub Releases
+- **Revocable file share links** — generate a public URL for any file, revoke it later
+- **Opt-in SMB authentication** — shares can require the `casaos-share` account instead of being world-readable
+- **Show hidden files toggle** in the file browser
+- **Self-hosted update channel** — version checks and releases live in this repo, not on someone else's API
+- **No third-party service calls** — the backend no longer phones home to check for updates
 
-### Structure
+### Repositories
 
-```
-neo-casaos          — Go backend (service/, route/v1/, model/, pkg/, build/)
-neo-casaos-ui       — Vue 3 frontend (file browser, settings, UpdateModal)
-neo-casaos-gateway  — Go reverse proxy
-```
+| Repository | What it is |
+|---|---|
+| [neo-casaos](https://github.com/Elephant-on-github/neo-casaos) | Go backend — services, routes, models, build scripts |
+| [neo-casaos-ui](https://github.com/Elephant-on-github/neo-casaos-ui) | Vue 3 frontend |
+| [neo-casaos-gateway](https://github.com/Elephant-on-github/neo-casaos-gateway) | Go reverse proxy |
 
-The backend reads its update channel from `/etc/casaos/casaos.conf` and checks `version.json` on this repo's `main` branch to drive the "Upgrade Now" button.
+## Install
 
-### Migrating from stock CasaOS
+### On an existing CasaOS install
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/Elephant-on-github/neo-casaos/main/build/migrate.sh | sudo bash
 ```
 
-Installs neo components in place (data, databases, users untouched), flips the update channel to this fork, restarts CasaOS. Afterwards the existing **Settings → Update** button pulls neo releases.
+Installs the neo components in place (data, databases and apps untouched),
+points the update channel at this fork, and restarts CasaOS. After that the
+existing **Settings → Update** button pulls neo releases.
 
-### Updating
+### On a fresh machine
+
+Install upstream CasaOS first, then run the migration command above.
+
+## Update
+
+Through the UI (**Settings → Update**) or from a terminal:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/Elephant-on-github/neo-casaos/main/build/update.sh | sudo bash
 ```
 
-### Releases
+## Releases
 
-Assets published at [Releases](https://github.com/Elephant-on-github/neo-casaos/releases): `linux-<arch>-casaos-vX.Y.Z.tar.gz` (amd64 / arm64 / arm-7). UI and gateway released from their own repos.
+Assets are published on the [releases page](https://github.com/Elephant-on-github/neo-casaos/releases)
+as `linux-<arch>-casaos-vX.Y.Z.tar.gz` for amd64, arm64 and arm-7. The UI and
+gateway ship from their own repositories.
 
-## Community 
+Release process: [docs/releasing.md](docs/releasing.md)
 
-CasaOS ("home" in Spanish) originated as the pre-installed system for [ZimaBoard](https://www.zimaboard.com). Built by the community, for the community — get help or share ideas on [Discord](https://discord.gg/knqAbbBbeX).
+## Requirements
 
-[![Discord Card](https://discordapp.com/api/guilds/884667213326463016/widget.png?style=banner2)](https://discord.gg/knqAbbBbeX)
+**Hardware** — amd64, arm64, armv7
+
+**Systems** — Debian, Ubuntu, Raspberry Pi OS (tested) · others work but are untested
 
 ## Contributing
 
-CasaOS is a community-driven open source project and the people involved are CasaOS users. That means CasaOS will always need contributions from community members just like you!
-
-- See <https://wiki.casaos.io/en/contribute> for ways of contributing to CasaOS
-- See <https://wiki.casaos.io/en/contribute/development> if you want to be involved in code contribution specifically
-
+Issues and pull requests on this repo are welcome. For the development workflow,
+see [the upstream contribution guide](https://wiki.casaos.io/en/contribute/development).
 
 ## Credits
 
-Many thanks to everyone who has helped CasaOS so far!
-
-Everyone's contribution is greatly appreciated. ([Emoji Key](https://allcontributors.org/docs/en/emoji-key))
+This project is built on the work of the CasaOS community — see the contributor
+list below. Licensed under [Apache 2.0](LICENSE).
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -273,16 +137,65 @@ Everyone's contribution is greatly appreciated. ([Emoji Key](https://allcontribu
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind are welcome!
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification.
 
-## Changelog
+## Community
 
-Detailed changes for each release are documented in the [release notes](https://github.com/IceWhaleTech/CasaOS/releases).
+Questions and ideas: [GitHub Discussions](https://github.com/Elephant-on-github/neo-casaos/discussions)
+or the [upstream Discord](https://discord.gg/knqAbbBbeX).
 
 ---
 
-<p align="center">
-    <a href="https://dashboard.trackgit.com/token/l5q8egi92tfhlxd70l2l">
-        <img src="https://us-central1-trackgit-analytics.cloudfunctions.net/token/ping/l5q8egi92tfhlxd70l2l" alt="trackgit-views" />
-    </a>
-</p>
+## Upstream CasaOS (original README)
+
+<details>
+<summary>Original CasaOS README (upstream, IceWhaleTech)</summary>
+
+### CasaOS - Your Personal Cloud
+
+#### Why do you need Personal Cloud?
+
+In 2020, the team noticed three important trends:
+
+- The cost of computing power and storage was decreasing fast.
+- A part of cloud computing was moving towards edge computing.
+- The issue of consumer data asset ownership and attribution had been ignored.
+
+Based on these trends, the team proposed a thought experiment internally: what if
+personal clouds were available under $100 in next five years? This personal cloud
+would provide a low-cost data collaboration solution as a personal data center,
+storing and managing data for creators and small organizations.
+
+#### Features
+
+- Friendly UI designed for home scenarios
+- Multiple hardware and base system support
+- Selected apps in the app store, one-click installation
+- Easily install numerous Docker apps
+- Elegant drive and file management
+- Well-designed system/app widgets
+
+#### Getting Started
+
+```sh
+wget -qO- https://get.casaos.io | sudo bash
+```
+
+#### Update CasaOS
+
+```sh
+wget -qO- https://get.casaos.io/update | sudo bash
+```
+
+#### Uninstall CasaOS
+
+```sh
+casaos-uninstall
+```
+
+#### Contributing
+
+- See <https://wiki.casaos.io/en/contribute> for ways of contributing to CasaOS
+- See <https://wiki.casaos.io/en/contribute/development> for code contributions
+
+</details>
