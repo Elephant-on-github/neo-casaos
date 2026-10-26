@@ -15,14 +15,37 @@ Legend: **B** = backend (neo-casaos), **U** = UI (neo-casaos-ui), **G** = gatewa
 - Self-hosted update channel + migrate/install/uninstall scripts (B) ✅
 - Version check redirected to in-repo `version.json` (B) ✅
 - README rebrand + structure diagram (docs) ✅
+- File-name search (B+U) ✅ — `GET /v1/file/search` + file browser search box
+- Drive health / SMART + drive temperature (B+U) ✅ — `GET /v1/sys/smart` + Storage widget
+- Hide "other Docker container app(s)" / legacy section (U) ✅ — see release note below
+
+## Release status (reconciled 2026-10-26)
+
+All of the above are **released**, not just in `main`:
+
+- backend **v0.4.17** (published 2026-10-26) — includes `c6a3793 / c243735 / 8c238ce`
+  (file-name search, SMART endpoint + fixes). Note this tag spent time as an
+  unreleased draft while `build/update.sh` already pinned it, which broke the
+  update flow for migrating users — verify pins point at published releases
+  before bumping them.
+- UI **v0.4.27** (published 2026-10-26, prerelease) — includes `6142523` (legacy
+  section honors the "Show other Docker container app(s)" toggle), `61c49aa`
+  (file search), `bc40c7c` (SMART + drive temp widget), `e9ca791` (toggle +
+  search mapping fix).
+- UI **v0.4.27 is still marked prerelease** — if it should be the default for
+  non-prerelease consumers, publish it as latest before the next release.
+
+Known deployment gap: a stock CasaOS box migrating today gets nothing until
+its migration/update completes — the pin bump (v0.4.17) went live before the
+release was published, so that migration failed at the download step.
 
 ## Tier S — trivial effort, high QoL (do next)
 
 | # | Feature | Effort | Impact | Where | Notes |
 |---|---|---|---|---|---|
-| 1 | CPU + drive temperature widgets on dashboard | 1d | 4 | B+U | `GetCPUTemperature()` and `GetDiskInfo()` already exist; just render |
+| 1 | CPU + drive temperature widgets on dashboard | 1d | 4 | B+U | Drive temp shipped (Storage widget, #11). `GetCPUTemperature()` feeds `/sys/cpu` + periodical WS payload — CPU widget is UI-only work |
 | 2 | System log viewer in settings | 1d | 3 | U | `GET /v1/sys/logs` exists; UI has UpdateModal polling logs already |
-| 3 | Hide apps not imported to CasaOS | 1d | 3 | U | Filter in app list (issue #133) |
+| 3 | Hide apps not imported to CasaOS ✅ | — | — | U | Shipped: legacy section honors the user-menu `existing_apps_switch` toggle (issue #133) |
 | 4 | Public roadmap | 1d | 2 | docs | GitHub project board (issue #1240) |
 | 5 | Dark/light theme polish | 1-2d | 2 | U | CSS variables; UI already has theme scaffolding |
 | 6 | App store search & filter | 1-2d | 2 | U | Client-side filter on app list |
@@ -33,9 +56,9 @@ Legend: **B** = backend (neo-casaos), **U** = UI (neo-casaos-ui), **G** = gatewa
 
 | # | Feature | Effort | Impact | Where | Notes |
 |---|---|---|---|---|---|
-| 9 | File search (recursive by name) | 2-3d | 4 | B+U | New backend endpoint + search bar in file browser |
+| 9 | File search (recursive by name) ✅ | — | — | B+U | Shipped: `GET /v1/file/search` (bounded: 500 results, depth 12, 15s) + search box |
 | 10 | Edit docker container from UI | 2-3d | 3 | U | Reuse existing container update API; three-dots menu (issue #133) |
-| 11 | Drive temp + SMART status widget | 2-3d | 3 | B+U | `smartmontools` is already a dep; parse `smartctl`, add route + widget |
+| 11 | Drive temp + SMART status widget ✅ | — | — | B+U | Shipped: `GET /v1/sys/smart` + Storage widget; full attribute view remains (#23) |
 | 12 | Folder size in file browser | 2d | 3 | B+U | `GET /v1/folder/size` exists; wire into UI |
 | 13 | File preview improvements (image/video/PDF) | 2d | 3 | U | Viewer components exist; extend supported types |
 | 14 | Manual network config (IPv4/IPv6, DNS, gateway, proxy) | 3-5d | 3 | B+U | Backend has `GetNet`/`GetNetInfo`; needs set route + form. (Dropped from earlier triage as env issue, but valuable as a feature.) |
@@ -75,13 +98,20 @@ Legend: **B** = backend (neo-casaos), **U** = UI (neo-casaos-ui), **G** = gatewa
 
 ## Recommended next batch (highest (impact/effort) ratio)
 
-1. **Tier S #1** — CPU/drive temp widgets (backend exists, just UI) — 1 day, daily friction gone
-2. **Tier S #5** — system log viewer (route exists, generalize UpdateModal) — 1 day
-3. **Tier S #3** — hide apps not imported (issue #133) — 1 day
-4. **Tier A #9** — file search — 2-3 days, high daily value
-5. **Tier A #10** — edit docker container (issue #133, "return of features") — 2-3 days
-6. **Tier A #12** — SMART/drive health widget — 2-3 days
-7. **Tier B #17** — backup/restore — 1-2 weeks, high value for home users
+Reconciled 2026-10-26: file search (#9), SMART widget (#11) and the legacy-apps
+hide (#3) are released (backend v0.4.17 / UI v0.4.27).
+
+1. **UI update-modal failure detection** (fix branch, unreleased) — the neo
+   update script never writes `CasaOS upgrade failed`, so a failed update left
+   the modal spinning forever. Release it with the next UI cut.
+2. **Verify deployments actually migrate** — the v0.4.17 draft-release incident
+   left migrating boxes stuck; re-run the migration once the next release is out.
+3. **Tier S #1** — CPU temperature widget (UI-only; backend already exposes it) — 1 day
+4. **Tier S #2** — system log viewer (`GET /v1/sys/logs` exists, generalize UpdateModal) — 1 day
+5. **Tier S #8** — wire up browser terminal (`route/v1/ssh.go` + WS upgrader exist) — 1-2 days
+6. **Tier A #10** — edit docker container (issue #133, "return of features") — 2-3 days
+7. **Tier A #23** — full SMART attribute view (route exists, extend the widget) — 1w
+8. **Tier B #17** — backup/restore — 1-2 weeks, high value for home users
 
 ## Notes on effort estimates
 
