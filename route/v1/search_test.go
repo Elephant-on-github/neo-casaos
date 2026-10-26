@@ -135,7 +135,7 @@ func TestEscapeGlob(t *testing.T) {
 		"a[b":     `a\[b`, // opening bracket must not start a character class
 		`a\b`:     `a\\b`, // backslash must not escape the next character
 		"a]b":     "a]b",  // bare ] is literal in glob — must NOT be escaped
-		`*\[]?`:   `\*\[\]\?`,
+		`*\[]?`:   `\*\\\[]\?`,
 		"hello..": "hello..",
 	} {
 		if got := escapeGlob(in); got != want {
