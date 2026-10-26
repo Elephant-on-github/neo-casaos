@@ -5,12 +5,14 @@
 package v1
 
 import (
+	"context"
 	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/IceWhaleTech/CasaOS/model"
 	"github.com/IceWhaleTech/CasaOS/pkg/utils/common_err"
@@ -20,14 +22,16 @@ import (
 const (
 	searchMaxResults = 500
 	searchMaxDepth   = 12
+	searchTimeout    = 15 * time.Second
 )
 
 // SearchResult is a single matched path.
 type SearchResult struct {
-	Path  string `json:"path"`
-	Name  string `json:"name"`
-	IsDir bool   `json:"is_dir"`
-	Size  int64  `json:"size"`
+	Path  string    `json:"path"`
+	Name  string    `json:"name"`
+	IsDir bool      `json:"is_dir"`
+	Size  int64     `json:"size"`
+	Date  time.Time `json:"date"` // mtime; renders in the file browser list
 }
 
 // SearchFiles matches file/directory names under `path` containing `keyword`
@@ -97,6 +101,7 @@ func searchWalk(root, lower string) []SearchResult {
 				Name:  info.Name(),
 				IsDir: info.IsDir(),
 				Size:  info.Size(),
+				Date:  info.ModTime(),
 			})
 		}
 		return nil
@@ -135,7 +140,12 @@ func findSearch(root, keyword string) ([]SearchResult, bool) {
 		args = append(args, "-name", n)
 	}
 	args = append(args, ")", "-prune", "-o", "-iname", glob, "-print0")
-	out, err := exec.Command("find", args...).Output()
+
+	// Hard deadline: a slow HDD or network mount must not stall the request
+	// or stack unbounded find processes; timeout falls back to searchWalk.
+	ctx, cancel := context.WithTimeout(context.Background(), searchTimeout)
+	defer cancel()
+	out, err := exec.CommandContext(ctx, "find", args...).Output()
 	if err != nil {
 		// unreadable subdirs make find exit non-zero — fall back to searchWalk
 		return nil, false
@@ -149,11 +159,13 @@ func findSearch(root, keyword string) ([]SearchResult, bool) {
 		name := filepath.Base(p)
 		isDir := false
 		var size int64
+		var mtime time.Time
 		if fi, statErr := os.Lstat(p); statErr == nil {
 			isDir = fi.IsDir()
 			size = fi.Size()
+			mtime = fi.ModTime()
 		}
-		results = append(results, SearchResult{Path: p, Name: name, IsDir: isDir, Size: size})
+		results = append(results, SearchResult{Path: p, Name: name, IsDir: isDir, Size: size, Date: mtime})
 		if len(results) >= searchMaxResults {
 			break
 		}

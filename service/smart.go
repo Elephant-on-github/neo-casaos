@@ -5,10 +5,12 @@
 package service
 
 import (
+	"context"
 	"encoding/json"
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 )
 
 // SMARTInfo is the parsed health snapshot for a single physical drive.
@@ -85,7 +87,11 @@ func (s *systemService) GetSMARTInfo() []SMARTInfo {
 	}
 
 	for _, d := range devs {
-		out, err := exec.Command("smartctl", "--json", "--all", "/dev/"+d).Output()
+		// Per-drive deadline: a hung USB bridge must not block the endpoint
+		// for minutes; a timed-out drive is reported as UNKNOWN.
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		out, err := exec.CommandContext(ctx, "smartctl", "--json", "--all", "/dev/"+d).Output()
+		cancel()
 		// smartctl exits non-zero for many benign reasons but still prints JSON
 		// on stdout; only fall back to stderr when stdout was empty.
 		if err != nil && len(out) == 0 {
