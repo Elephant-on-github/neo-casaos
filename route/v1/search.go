@@ -48,6 +48,14 @@ func SearchFiles(ctx echo.Context) error {
 			Message: "path and keyword are required",
 		})
 	}
+	// Absolute path only: find treats a leading-`-` argument as an expression
+	// (defaulting to "."), so relative input must never reach it.
+	if !filepath.IsAbs(root) {
+		return ctx.JSON(http.StatusBadRequest, model.Result{
+			Success: common_err.INVALID_PARAMS,
+			Message: "path must be absolute",
+		})
+	}
 	if fi, err := os.Stat(root); err != nil || !fi.IsDir() {
 		return ctx.JSON(http.StatusBadRequest, model.Result{
 			Success: common_err.INVALID_PARAMS,

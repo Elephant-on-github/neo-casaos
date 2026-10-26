@@ -2,10 +2,15 @@ package v1
 
 import (
 	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/labstack/echo/v4"
 )
 
 func TestShouldSkipDir(t *testing.T) {
@@ -117,5 +122,43 @@ func TestSearchWalkResultCap(t *testing.T) {
 	}
 	if len(results) == 0 {
 		t.Error("expected some matches")
+	}
+}
+
+func TestEscapeGlob(t *testing.T) {
+	// escapeGlob is the only barrier between user input and find's expression
+	// parser — these cases pin the escaping.
+	for in, want := range map[string]string{
+		"photo":   "photo",
+		"a*b":     `a\*b`, // glob repeat must stay literal
+		"a?b":     `a\?b`, // glob single-char must stay literal
+		"a[b":     `a\[b`, // opening bracket must not start a character class
+		`a\b`:     `a\\b`, // backslash must not escape the next character
+		"a]b":     "a]b",  // bare ] is literal in glob — must NOT be escaped
+		`*\[]?`:   `\*\[\]\?`,
+		"hello..": "hello..",
+	} {
+		if got := escapeGlob(in); got != want {
+			t.Errorf("escapeGlob(%q) = %q, want %q", in, got, want)
+		}
+	}
+}
+
+func TestSearchFilesRejectsRelativePath(t *testing.T) {
+	// a leading-`-` path would be parsed by find as an expression; the handler
+	// must 400 on all relative paths before any subprocess is spawned.
+	for _, p := range []string{"-delete", "relative/dir", "./x", "../x"} {
+		e := echo.New()
+		req := httptest.NewRequest(echo.GET,
+			"/v1/file/search?path="+url.QueryEscape(p)+"&keyword=x", nil)
+		rec := httptest.NewRecorder()
+		ctx := e.NewContext(req, rec)
+
+		if err := SearchFiles(ctx); err != nil {
+			t.Fatalf("SearchFiles(%q): %v", p, err)
+		}
+		if rec.Code != http.StatusBadRequest {
+			t.Errorf("path %q: status %d, want 400", p, rec.Code)
+		}
 	}
 }
