@@ -61,6 +61,7 @@ type SystemService interface {
 	MkdirAll(path string) (int, error)
 	GetCPUTemperature() int
 	GetCPUPower() map[string]string
+	GetSMARTInfo() []SMARTInfo
 	GetMacAddress() (string, error)
 	SystemReboot() error
 	SystemShutdown() error

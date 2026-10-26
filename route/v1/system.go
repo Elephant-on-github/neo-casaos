@@ -81,6 +81,16 @@ func GetCasaOSErrorLogs(ctx echo.Context) error {
 	return ctx.JSON(common_err.SUCCESS, model.Result{Success: common_err.SUCCESS, Message: common_err.GetMsg(common_err.SUCCESS), Data: service.MyService.System().GetCasaOSLogs(line)})
 }
 
+// @Summary get drive health (SMART) + temperature
+// @Produce application/json
+// @Tags sys
+// @Security ApiKeyAuth
+// @Success 200 {string} string "ok"
+// @Router /sys/smart [get]
+func GetSystemSMARTInfo(ctx echo.Context) error {
+	return ctx.JSON(common_err.SUCCESS, model.Result{Success: common_err.SUCCESS, Message: common_err.GetMsg(common_err.SUCCESS), Data: service.MyService.System().GetSMARTInfo()})
+}
+
 // 系统配置
 func GetSystemConfigDebug(ctx echo.Context) error {
 	array := service.MyService.System().GetSystemConfigDebug()

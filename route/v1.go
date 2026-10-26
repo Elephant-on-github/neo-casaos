@@ -83,6 +83,7 @@ func InitV1Router() http.Handler {
 			// v1SysGroup.GET("/config", v1.GetSystemConfig) //delete
 			// v1SysGroup.POST("/config", v1.PostSetSystemConfig)
 			v1SysGroup.GET("/logs", v1.GetCasaOSErrorLogs) // error/logs
+			v1SysGroup.GET("/smart", v1.GetSystemSMARTInfo) // drive health + temp
 			// v1SysGroup.GET("/widget/config", v1.GetWidgetConfig)//delete
 			// v1SysGroup.POST("/widget/config", v1.PostSetWidgetConfig)//delete
 
@@ -117,6 +118,7 @@ func InitV1Router() http.Handler {
 			v1FileGroup.PUT("/name", v1.RenamePath)
 			// file/rename
 			v1FileGroup.GET("/content", v1.GetFilerContent) // file/read
+			v1FileGroup.GET("/search", v1.SearchFiles)     // file/name-search
 
 			// File uploads need to be handled separately, and will not be modified here
 			// v1FileGroup.POST("/upload", v1.PostFileUpload)
