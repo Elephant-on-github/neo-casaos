@@ -1,3 +1,5 @@
+//go:build linux
+
 package service_test
 
 import (
@@ -7,6 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestPorts reads /proc/net/* (Linux-only) and asserts ports are in use,
+// which only holds on a Linux host.
 func TestPorts(t *testing.T) {
 	service := service.NewHealthService()
 
