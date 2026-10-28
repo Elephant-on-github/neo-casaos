@@ -106,7 +106,7 @@ Check_Arch() {
     readonly CASA_PACKAGES=(
         "https://github.com/Elephant-on-github/neo-casaos-gateway/releases/download/v0.4.10/linux-${TARGET_ARCH}-casaos-gateway-v0.4.10.tar.gz"
         "https://github.com/Elephant-on-github/neo-casaos/releases/download/v0.4.21/linux-${TARGET_ARCH}-casaos-v0.4.21.tar.gz"
-        "https://github.com/Elephant-on-github/neo-casaos-ui/releases/download/v0.4.43/linux-all-casaos-v0.4.43.tar.gz"
+        "https://github.com/Elephant-on-github/neo-casaos-ui/releases/download/v0.4.45/linux-all-casaos-v0.4.45.tar.gz"
     )
 }
 
