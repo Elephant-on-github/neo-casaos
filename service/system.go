@@ -432,12 +432,12 @@ func (s *systemService) GetCasaOSLogs(lineNumber int) string {
 		config.AppInfo.LogFileExt,
 	)))
 	if err != nil {
-		return err.Error()
+		return ""
 	}
 	defer file.Close()
 	content, err := io.ReadAll(file)
 	if err != nil {
-		return err.Error()
+		return ""
 	}
 
 	return string(content)

@@ -79,6 +79,10 @@ func (s *sharesStruct) DeleteShare(id string) {
 // Anonymous shares stay guest-accessible (existing behavior); authenticated shares
 // require the ShareUserName account and drop the world-writable masks.
 func buildShareConfig(share model2.SharesDBModel) string {
+	// Reject paths that could inject Samba config directives.
+	if strings.ContainsAny(share.Path, "\n\r[]") {
+		return ""
+	}
 	dirName := filepath.Base(share.Path)
 	access := "public = Yes\nguest ok = Yes\ncreate mask = 0777\ndirectory mask = 0777"
 	if !share.Anonymous {

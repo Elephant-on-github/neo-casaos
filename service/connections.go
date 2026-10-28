@@ -11,7 +11,6 @@
 package service
 
 import (
-	"github.com/IceWhaleTech/CasaOS/service/model"
 	model2 "github.com/IceWhaleTech/CasaOS/service/model"
 	"gorm.io/gorm"
 )
@@ -55,7 +54,7 @@ func (s *connectionsStruct) UpdateConnection(connection *model2.ConnectionsDBMod
 }
 
 func (s *connectionsStruct) DeleteConnection(id string) {
-	s.db.Where("id= ?", id).Delete(&model.ConnectionsDBModel{})
+	s.db.Where("id= ?", id).Delete(&model2.ConnectionsDBModel{})
 }
 
 func NewConnectionsService(db *gorm.DB) ConnectionsService {
