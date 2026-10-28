@@ -18,6 +18,9 @@ Legend: **B** = backend (neo-casaos), **U** = UI (neo-casaos-ui), **G** = gatewa
 - File-name search (B+U) ✅ — `GET /v1/file/search` + file browser search box
 - Drive health / SMART + drive temperature (B+U) ✅ — `GET /v1/sys/smart` + Storage widget
 - Hide "other Docker container app(s)" / legacy section (U) ✅ — see release note below
+- System log viewer bugs fixed (U) ✅ — `TerminalPanel.getLogs()` no longer mangles the response; download works; `$refs` guarded
+- Terminal reachable at `/terminal` (U) ✅ — new route + `Terminal.vue` view
+- Folder size backend (B) ✅ — `DirSizeB` now uses `du -sb` and ignores inaccessible paths
 
 ## Release status (reconciled 2026-10-26)
 
@@ -43,14 +46,16 @@ release was published, so that migration failed at the download step.
 
 | # | Feature | Effort | Impact | Where | Notes |
 |---|---|---|---|---|---|
-| 1 | CPU + drive temperature widgets on dashboard | 1d | 4 | B+U | Drive temp shipped (Storage widget, #11). `GetCPUTemperature()` feeds `/sys/cpu` + periodical WS payload — CPU widget is UI-only work |
-| 2 | System log viewer in settings | 1d | 3 | U | `GET /v1/sys/logs` exists; UI has UpdateModal polling logs already |
+| 1 | CPU + drive temperature widgets on dashboard | — | — | B+U | ✅ Done: drive temp shipped (Storage widget); CPU temp already wired into the existing System Status (CPU) widget via `/sys/cpu` + periodical WS payload — no separate widget needed. |
+| 2 | System log viewer in settings | 1d | 3 | U | ✅ Bugs fixed: `TerminalPanel.getLogs()` no longer mangles the response with a broken regex (`/\n(.{8})/gu` + `substring(8, len-1)`); guarded unmounted `$refs`; download now fetches via the API instead of a non-existent `/v2/casaos/health/logs` URL. Remaining: settings-page surface (not modal-only). |
 | 3 | Hide apps not imported to CasaOS ✅ | — | — | U | Shipped: legacy section honors the user-menu `existing_apps_switch` toggle (issue #133) |
-| 4 | Public roadmap | 1d | 2 | docs | GitHub project board (issue #1240) |
+| 4 | Public roadmap | 1d | 2 | docs | GitHub project board (issue #1240). Not a code change — configured via the GitHub web UI. |
 | 5 | Dark/light theme polish | 1-2d | 2 | U | CSS variables; UI already has theme scaffolding |
-| 6 | App store search & filter | 1-2d | 2 | U | Client-side filter on app list |
-| 7 | Notification center surface | 1-2d | 3 | U | `Notify` service exists in backend; check UI wiring |
-| 8 | Terminal in browser | 1-2d | 3 | U | `ssh.go` + websocket upgrader exist; check wiring |
+| 6 | App store search & filter | 1-2d | 2 | U | Client-side filter on app list (already implemented in AppPanel via `searchKey` + `filteredPageList`) |
+| 7 | Notification center surface | — | — | — | ❌ Not planned: `Notify` service exists but surfacing a center is out of scope for neo; dropped. |
+| 8 | Terminal in browser | — | — | U | ✅ Done: terminal already shipped; now also reachable directly at `/terminal` (new route + `Terminal.vue` view). |
+| 9 | Folder size in file browser | 1d | 3 | B+U | Backend `DirSizeB` now uses `du -sb` and ignores inaccessible paths (no more nil-info panic / walk abort). UI wiring (`GET /v1/folder/size`) still TODO. |
+| 10 | Compose files: better editing in add-app screen + per-app settings | 2-3d | 4 | U | New goal: richer compose editor UX in `AppPanel` (install) and `ComposeConfig` (per-app settings) — validation, env-file editing, volume/path pickers, inline errors. |
 
 ## Tier A — easy, good QoL (2–5 days each)
 
