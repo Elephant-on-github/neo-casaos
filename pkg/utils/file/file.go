@@ -11,6 +11,7 @@ import (
 	"log"
 	"mime/multipart"
 	"os"
+	"os/exec"
 	"path"
 	path2 "path"
 	"path/filepath"
@@ -546,15 +547,30 @@ func GetFileOrDirSize(path string) (int64, error) {
 }
 
 // getFileSize get file size by path(B)
+// DirSizeB returns the total size of a directory tree. It prefers `du`
+// (which naturally skips inaccessible subpaths) and falls back to a
+// filepath.Walk that ignores permission errors instead of aborting.
 func DirSizeB(path string) (int64, error) {
-	var size int64
-	err := filepath.Walk(path, func(_ string, info os.FileInfo, err error) error {
-		if !info.IsDir() {
-			size += info.Size()
+	if out, err := exec.Command("du", "-sb", path).Output(); err == nil {
+		fields := strings.Fields(string(out))
+		if len(fields) > 0 {
+			if n, perr := strconv.ParseInt(fields[0], 10, 64); perr == nil {
+				return n, nil
+			}
 		}
-		return err
+	}
+	var size int64
+	werr := filepath.Walk(path, func(_ string, info os.FileInfo, err error) error {
+		if err != nil {
+			return nil // skip inaccessible paths instead of aborting
+		}
+		if info == nil || info.IsDir() {
+			return nil
+		}
+		size += info.Size()
+		return nil
 	})
-	return size, err
+	return size, werr
 }
 
 func MoveFile(sourcePath, destPath string) error {
