@@ -149,7 +149,7 @@ Check_Arch() {
     readonly CASA_PACKAGES=(
         "${NEO_REPO}/neo-casaos-gateway/releases/download/v0.4.10/linux-${TARGET_ARCH}-casaos-gateway-v0.4.10.tar.gz"
         "${NEO_REPO}/neo-casaos/releases/download/v0.4.20/linux-${TARGET_ARCH}-casaos-v0.4.20.tar.gz"
-        "${NEO_REPO}/neo-casaos-ui/releases/download/v0.4.30/linux-all-casaos-v0.4.30.tar.gz"
+        "${NEO_REPO}/neo-casaos-ui/releases/download/v0.4.31/linux-all-casaos-v0.4.31.tar.gz"
         "${UPSTREAM_REPO}/CasaOS-MessageBus/releases/download/v0.4.4-3-alpha2/linux-${TARGET_ARCH}-casaos-message-bus-v0.4.4-3-alpha2.tar.gz"
         "${UPSTREAM_REPO}/CasaOS-UserService/releases/download/v0.4.8/linux-${TARGET_ARCH}-casaos-user-service-v0.4.8.tar.gz"
         "${UPSTREAM_REPO}/CasaOS-LocalStorage/releases/download/v0.4.4/linux-${TARGET_ARCH}-casaos-local-storage-v0.4.4.tar.gz"
