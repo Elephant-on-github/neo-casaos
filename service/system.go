@@ -1,6 +1,7 @@
 package service
 
 import (
+	"bufio"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -435,12 +436,31 @@ func (s *systemService) GetCasaOSLogs(lineNumber int) string {
 		return ""
 	}
 	defer file.Close()
-	content, err := io.ReadAll(file)
-	if err != nil {
-		return ""
+
+	// Respect the requested tail length so a huge log file does not get
+	// dumped to the UI in one shot. lineNumber <= 0 means "all lines".
+	if lineNumber <= 0 {
+		content, err := io.ReadAll(file)
+		if err != nil {
+			return ""
+		}
+		return string(content)
 	}
 
-	return string(content)
+	// Read the file and keep only the last lineNumber lines.
+	scanner := bufio.NewScanner(file)
+	scanner.Buffer(make([]byte, 1024*1024), 1024*1024)
+	var lines []string
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+		if len(lines) > lineNumber {
+			lines = lines[1:]
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		return ""
+	}
+	return strings.Join(lines, "\n")
 }
 
 func GetDeviceAllIP() []string {
