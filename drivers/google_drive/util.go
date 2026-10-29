@@ -13,7 +13,7 @@ import (
 	"github.com/IceWhaleTech/CasaOS/model"
 	"github.com/IceWhaleTech/CasaOS/pkg/utils"
 	"github.com/go-resty/resty/v2"
-	log "github.com/sirupsen/logrus"
+
 	"go.uber.org/zap"
 )
 
@@ -39,7 +39,7 @@ func (d *GoogleDrive) getRefreshToken() error {
 	if err != nil {
 		return err
 	}
-	logger.Info("get refresh token", zap.String("res", res.String()))
+	logger.Info("get refresh token", zap.Int("status", res.StatusCode()))
 	if e.Error != "" {
 		return errors.New(e.Error)
 	}
@@ -51,7 +51,7 @@ func (d *GoogleDrive) refreshToken() error {
 	url := "https://www.googleapis.com/oauth2/v4/token"
 	var resp base.TokenResp
 	var e TokenError
-	res, err := base.RestyClient.R().SetResult(&resp).SetError(&e).
+	_, err := base.RestyClient.R().SetResult(&resp).SetError(&e).
 		SetFormData(map[string]string{
 			"client_id":     d.ClientID,
 			"client_secret": d.ClientSecret,
@@ -61,7 +61,6 @@ func (d *GoogleDrive) refreshToken() error {
 	if err != nil {
 		return err
 	}
-	log.Debug(res.String())
 	if e.Error != "" {
 		return errors.New(e.Error)
 	}
@@ -166,3 +165,6 @@ func GetConfig() GoogleDrive {
 
 	return config
 }
+
+
+

@@ -28,7 +28,7 @@ func GetRecoverStorage(ctx echo.Context) error {
 		if len(google_drive.Code) == 0 {
 			notify["status"] = "fail"
 			notify["message"] = "Code cannot be empty"
-			logger.Error("Then code is empty: ", zap.String("code", google_drive.Code), zap.Any("name", "google_drive"))
+			logger.Error("Then code is empty", zap.Any("name", "google_drive"))
 			service.MyService.Notify().SendNotify("casaos:file:recover", notify)
 			return ctx.HTML(http.StatusOK, `<p>Code cannot be empty</p><script>window.close()</script>`)
 		}
@@ -103,7 +103,7 @@ func GetRecoverStorage(ctx echo.Context) error {
 
 			notify["status"] = "fail"
 			notify["message"] = "Code cannot be empty"
-			logger.Error("Then code is empty error: ", zap.String("code", dropbox.Code), zap.Any("name", "dropbox"))
+			logger.Error("Then code is empty", zap.Any("name", "dropbox"))
 			service.MyService.Notify().SendNotify(event, notify)
 			return ctx.HTML(http.StatusOK, `<p>Code cannot be empty</p><script>window.close()</script>`)
 		}
@@ -174,7 +174,7 @@ func GetRecoverStorage(ctx echo.Context) error {
 		if len(onedrive.Code) == 0 {
 			notify["status"] = "fail"
 			notify["message"] = "Code cannot be empty"
-			logger.Error("Then code is empty error: ", zap.String("code", onedrive.Code), zap.Any("name", "onedrive"))
+			logger.Error("Then code is empty", zap.Any("name", "onedrive"))
 			service.MyService.Notify().SendNotify(event, notify)
 			return ctx.HTML(http.StatusOK, `<p>Code cannot be empty</p><script>window.close()</script>`)
 		}
@@ -245,3 +245,5 @@ func GetRecoverStorage(ctx echo.Context) error {
 
 	return ctx.HTML(200, `<p>Just close the page</p><script>window.close()</script>`)
 }
+
+
