@@ -105,8 +105,8 @@ Check_Arch() {
     # must match the releases byte-for-byte (arm-7, not armv7)
     readonly CASA_PACKAGES=(
         "https://github.com/Elephant-on-github/neo-casaos-gateway/releases/download/v0.4.10/linux-${TARGET_ARCH}-casaos-gateway-v0.4.10.tar.gz"
-        "https://github.com/Elephant-on-github/neo-casaos/releases/download/v0.4.21/linux-${TARGET_ARCH}-casaos-v0.4.21.tar.gz"
-        "https://github.com/Elephant-on-github/neo-casaos-ui/releases/download/v0.4.47/linux-all-casaos-v0.4.47.tar.gz"
+        "https://github.com/Elephant-on-github/neo-casaos/releases/download/v0.4.22/linux-${TARGET_ARCH}-casaos-v0.4.22.tar.gz"
+        "https://github.com/Elephant-on-github/neo-casaos-ui/releases/download/v0.4.48/linux-all-casaos-v0.4.48.tar.gz"
     )
 }
 
