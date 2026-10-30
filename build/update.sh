@@ -112,7 +112,7 @@ Check_Arch() {
 # Fallback pins used only if the manifest cannot be fetched.
 FALLBACK_BACKEND="v0.4.22"
 FALLBACK_GATEWAY="v0.4.10"
-FALLBACK_UI="v0.4.50"
+FALLBACK_UI="v0.4.51"
 
 # Fetch the remote manifest into $1 (file path). Returns 0 on success.
 fetch_manifest() {
