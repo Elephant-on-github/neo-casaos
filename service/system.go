@@ -36,7 +36,7 @@ import (
 )
 
 type SystemService interface {
-	UpdateSystemVersion(version string)
+	UpdateSystemVersion(version string, components []string)
 	GetSystemConfigDebug() []string
 	GetCasaOSLogs(lineNumber int) string
 	UpdateAssist()
@@ -372,7 +372,7 @@ func (c *systemService) GetNet(physics bool) []string {
 	}
 }
 
-func (s *systemService) UpdateSystemVersion(version string) {
+func (s *systemService) UpdateSystemVersion(version string, components []string) {
 	keyName := "casa_version"
 	Cache.Delete(keyName)
 	if file.Exists(config.AppInfo.LogPath + "/upgrade.log") {
@@ -381,7 +381,11 @@ func (s *systemService) UpdateSystemVersion(version string) {
 	file.CreateFile(config.AppInfo.LogPath + "/upgrade.log")
 	// go command2.OnlyExec("curl -fsSL https://raw.githubusercontent.com/LinkLeong/casaos-alpha/main/update.sh | bash")
 	if len(config.ServerInfo.UpdateUrl) > 0 {
-		go command.OnlyExec("curl -fsSL " + config.ServerInfo.UpdateUrl + " | bash")
+		arg := ""
+		if len(components) > 0 {
+			arg = " -s -- " + strings.Join(components, " ")
+		}
+		go command.OnlyExec("curl -fsSL " + config.ServerInfo.UpdateUrl + " | bash" + arg)
 	} else {
 		osRelease, _ := file.ReadOSRelease()
 		go command.OnlyExec("curl -fsSL https://get.casaos.io/update?t=" + osRelease["MANUFACTURER"] + " | bash")

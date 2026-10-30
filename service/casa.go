@@ -2,6 +2,7 @@ package service
 
 import (
 	json2 "encoding/json"
+	"os"
 	"time"
 
 	"github.com/IceWhaleTech/CasaOS/model"
@@ -9,8 +10,15 @@ import (
 	"github.com/tidwall/gjson"
 )
 
+// installedVersionsPath records which component versions install.sh/update.sh
+// put on disk. The backend cannot query the gateway or the (static) UI for
+// their running version, so this file is the single source of truth for
+// "what is installed".
+const installedVersionsPath = "/etc/casaos/installed.json"
+
 type CasaService interface {
 	GetCasaosVersion() model.Version
+	GetInstalledVersions() map[string]string
 }
 
 type casaService struct{}
@@ -44,6 +52,35 @@ func (o *casaService) GetCasaosVersion() model.Version {
 	}
 
 	return version
+}
+
+// GetInstalledVersions reads the on-disk record written by install.sh/update.sh.
+// A missing or unreadable file (legacy installs) yields an empty map, which the
+// caller treats as "unknown version -> needs update".
+func (o *casaService) GetInstalledVersions() map[string]string {
+	out := map[string]string{}
+	b, err := os.ReadFile(installedVersionsPath)
+	if err != nil {
+		return out
+	}
+	var parsed struct {
+		Backend string `json:"backend"`
+		Gateway string `json:"gateway"`
+		UI      string `json:"ui"`
+	}
+	if err := json2.Unmarshal(b, &parsed); err != nil {
+		return out
+	}
+	if parsed.Backend != "" {
+		out["backend"] = parsed.Backend
+	}
+	if parsed.Gateway != "" {
+		out["gateway"] = parsed.Gateway
+	}
+	if parsed.UI != "" {
+		out["ui"] = parsed.UI
+	}
+	return out
 }
 
 func NewCasaService() CasaService {

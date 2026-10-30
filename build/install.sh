@@ -444,6 +444,16 @@ DownloadAndInstallCasaOS() {
     done
 }
 
+WriteInstalledState() {
+    # Record the versions this install put on disk, so the update checker can
+    # tell which components are behind without querying the (static) UI or
+    # the gateway at runtime.
+    local state_file="/etc/casaos/installed.json"
+    ${sudo_cmd} mkdir -p "$(dirname "${state_file}")"
+    printf '{"backend":"0.4.22","gateway":"0.4.10","ui":"0.4.50"}\n' | ${sudo_cmd} tee "${state_file}" >/dev/null
+    Show 0 "Installed versions recorded."
+}
+
 Clean_Temp_Files() {
     if [ -n "${TMP_DIR}" ]; then
         ${sudo_cmd} rm -rf "${TMP_DIR}" || Show 3 "Failed to clean temporary files"
@@ -535,6 +545,9 @@ DownloadAndInstallCasaOS
 
 # Step 9: Check Service Status
 Check_Service_status
+
+# Step 9b: Record installed versions
+WriteInstalledState
 
 # Step 10: Clean up and show welcome banner
 Clean_Temp_Files

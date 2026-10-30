@@ -36,21 +36,68 @@ import (
 // @Success 200 {string} string "ok"
 // @Router /sys/version/check [get]
 func GetSystemCheckVersion(ctx echo.Context) error {
-	need, version := version.IsNeedUpdate(service.MyService.Casa().GetCasaosVersion())
+	remote := service.MyService.Casa().GetCasaosVersion()
+	installed := service.MyService.Casa().GetInstalledVersions()
+
+	// Per-component installed version: backend is always common.VERSION; the
+	// other two come from the on-disk state file (unknown if never recorded).
+	installedBackend := common.VERSION
+	installedGateway := installed["gateway"]
+	installedUI := installed["ui"]
+
+	latestBackend := remote.Version
+	latestGateway := remote.Version
+	latestUI := remote.Version
+	if v, ok := remote.Components["gateway"]; ok && v.Version != "" {
+		latestGateway = v.Version
+	}
+	if v, ok := remote.Components["ui"]; ok && v.Version != "" {
+		latestUI = v.Version
+	}
+	if v, ok := remote.Components["backend"]; ok && v.Version != "" {
+		latestBackend = v.Version
+	}
+
+	// Use the existing comparator against the remote component versions.
+	backendNeed := version.IsNeedUpdateBool(installedBackend, latestBackend)
+	gatewayNeed := version.IsNeedUpdateBool(installedGateway, latestGateway)
+	uiNeed := version.IsNeedUpdateBool(installedUI, latestUI)
+
+	// Back-compat aggregate need_update: any component behind.
+	need := backendNeed || gatewayNeed || uiNeed
+
 	if need {
 		installLog := model2.AppNotify{}
 		installLog.State = 0
-		installLog.Message = "New version " + version.Version + " is ready, ready to upgrade"
+		installLog.Message = "New version is ready, ready to upgrade"
 		installLog.Type = types.NOTIFY_TYPE_NEED_CONFIRM
 		installLog.CreatedAt = strconv.FormatInt(time.Now().Unix(), 10)
 		installLog.UpdatedAt = strconv.FormatInt(time.Now().Unix(), 10)
 		installLog.Name = "CasaOS System"
 		service.MyService.Notify().AddLog(installLog)
 	}
-	data := make(map[string]interface{}, 3)
+
+	data := make(map[string]interface{}, 6)
 	data["need_update"] = need
-	data["version"] = version
+	data["version"] = remote
 	data["current_version"] = common.VERSION
+	data["components"] = map[string]interface{}{
+		"backend": map[string]interface{}{
+			"installed":   installedBackend,
+			"latest":      latestBackend,
+			"need_update": backendNeed,
+		},
+		"gateway": map[string]interface{}{
+			"installed":   installedGateway,
+			"latest":      latestGateway,
+			"need_update": gatewayNeed,
+		},
+		"ui": map[string]interface{}{
+			"installed":   installedUI,
+			"latest":      latestUI,
+			"need_update": uiNeed,
+		},
+	}
 	return ctx.JSON(common_err.SUCCESS, model.Result{Success: common_err.SUCCESS, Message: common_err.GetMsg(common_err.SUCCESS), Data: data})
 }
 
@@ -62,11 +109,24 @@ func GetSystemCheckVersion(ctx echo.Context) error {
 // @Success 200 {string} string "ok"
 // @Router /sys/update [post]
 func SystemUpdate(ctx echo.Context) error {
-	need, version := version.IsNeedUpdate(service.MyService.Casa().GetCasaosVersion())
-	if need {
-		service.MyService.System().UpdateSystemVersion(version.Version)
+	// Optional body: {"components":["ui","backend"]}. Absent => all.
+	type body struct {
+		Components []string `json:"components"`
 	}
-	return ctx.JSON(common_err.SUCCESS, model.Result{Success: common_err.SUCCESS, Message: common_err.GetMsg(common_err.SUCCESS)})
+	b := body{}
+	_ = ctx.Bind(&b)
+
+	remote := service.MyService.Casa().GetCasaosVersion()
+	components := b.Components
+	if len(components) == 0 {
+		components = []string{"backend", "gateway", "ui"}
+	}
+	service.MyService.System().UpdateSystemVersion(remote.Version, components)
+	return ctx.JSON(common_err.SUCCESS, model.Result{
+		Success: common_err.SUCCESS,
+		Message: common_err.GetMsg(common_err.SUCCESS),
+		Data:    map[string]interface{}{"updated_components": components},
+	})
 }
 
 // @Summary  get logs
