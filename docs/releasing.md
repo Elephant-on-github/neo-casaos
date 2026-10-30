@@ -15,10 +15,13 @@ commit on this repo.
   - `version.json` `data.version` (repo root; a CI test enforces it
     matches `common.VERSION`)
   - the backend pin in `build/update.sh` (the `neo-casaos` package URL)
-- Gateway-only and UI-only release-tag commits bump **only** the
-  corresponding pin in `build/update.sh` (the `neo-casaos-gateway` or
-  `linux-all-casaos` package URL). `VERSION` and `version.json` are
-  backend-only and are NOT touched by gateway/UI-only releases.
+- Gateway-only and UI-only release-tag commits bump the corresponding
+  entry in `version.json`'s `data.components` map (e.g.
+  `components.ui.version` / `components.gateway.version`) in addition to
+  the `build/update.sh` pin. `VERSION` and `version.json`'s top-level
+  `data.version` remain backend-only. The manifest (`version.json`) is
+  the single source of truth the update checker and `update.sh` consult
+  to decide which components need downloading.
 - `FORK_BASE` in `build/migrate.sh` is bumped whenever the stock CasaOS
   version the neo fork is based on changes (not tied to a specific
   component release; bumped alongside the relevant pin when stock moves).
