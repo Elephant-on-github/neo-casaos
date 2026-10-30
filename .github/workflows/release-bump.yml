@@ -1,0 +1,36 @@
+name: release manifest bump
+
+# Fired via repository_dispatch from the backend, gateway, and UI release
+# workflows AFTER their release succeeds, so pins only ever move once the
+# assets the pins point at exist.
+on:
+  repository_dispatch:
+    types: [released]
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Bump manifest and pins
+        run: |
+          python3 .github/scripts/bump_manifest.py \
+            "${{ github.event.client_payload.component }}" \
+            "${{ github.event.client_payload.tag }}"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add version.json build/update.sh build/install.sh
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+            exit 0
+          fi
+          git commit -m ":release: Bump ${{ github.event.client_payload.component }} to ${{ github.event.client_payload.tag }}"
+          git push

@@ -53,6 +53,20 @@ pinned.
 
 1. Pre-tag commit: bump `VERSION`, `version.json`, and the `build/update.sh`
    pins to the versions about to be tagged.
+   **Automation note:** for gateway/UI-only releases, step 1 and step 4 are
+   handled automatically — after a release workflow succeeds it fires a
+   `repository_dispatch` (`event=released`, payload `component` + `tag`) at
+   `neo-casaos`, whose `release-bump.yml` workflow runs
+   `.github/scripts/bump_manifest.py` and commits the manifest + pin bumps to
+   main with a `:release:` commit. The dispatch only fires *after* the release
+   succeeds, so pins never go live before the assets they point at exist.
+   For backend releases the automation bumps `data.version` +
+   `components.backend.version` + pins after the tag; the pre-tag bump of
+   `VERSION`/`common.VERSION` itself remains manual (the tag content is
+   already fixed by then — bump `VERSION` *before* tagging).
+   **Required secret:** a PAT with `contents: write` on
+   `Elephant-on-github/neo-casaos`, stored as `BUMP_TOKEN` in all three
+   release repos (`neo-casaos`, `neo-casaos-gateway`, `neo-casaos-ui`).
 2. Per repo, tag `vX.Y.Z` and push the tag:
    - `neo-casaos` (backend) — releases via the IceWhaleTech reusable
      goreleaser workflow (`.github/workflows/release.yml`)
@@ -65,9 +79,10 @@ pinned.
    - `linux-<arch>-casaos-gateway-vX.Y.Z.tar.gz` (same three arches)
    - `linux-all-casaos-vX.Y.Z.tar.gz` (UI, arch-independent)
    A missing arch asset makes that arch's update fail with a 404.
-4. Merge the bump commit to main (raw URLs now serve the new pins, and
-   `version.json` — fetched live from main — arms the update banner in
-   already-migrated UIs).
+4. For backend releases (or when automation is unavailable): merge the bump
+   commit to main (raw URLs now serve the new pins, and `version.json` —
+   fetched live from main — arms the update banner in already-migrated UIs).
+   For gateway/UI releases the automation commits to main directly.
 
 ## Known prerequisites / failure modes
 

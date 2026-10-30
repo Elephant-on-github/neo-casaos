@@ -64,3 +64,13 @@ jobs:
           OneDriveID: ${{ secrets.OneDriveID }}
           OneDriveSecret: ${{ secrets.OneDriveSecret }}
           OneDrivePublic: ${{ secrets.OneDrivePublic }}
+
+      - name: Notify neo-casaos manifest bump
+        if: success()
+        run: |
+          gh api repos/Elephant-on-github/neo-casaos/dispatches \
+            -f event_type=released \
+            -f 'client_payload[component]=backend' \
+            -f "client_payload[tag]=${GITHUB_REF/refs\/tags\//}"
+        env:
+          GH_TOKEN: ${{ secrets.BUMP_TOKEN }}
