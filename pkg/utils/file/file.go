@@ -59,12 +59,10 @@ func IsNotExistMkDir(src string) error {
 
 // MkDir create a directory
 func MkDir(src string) error {
-	err := os.MkdirAll(src, os.ModePerm)
+	err := os.MkdirAll(src, 0o750)
 	if err != nil {
 		return err
 	}
-	os.Chmod(src, 0o777)
-
 	return nil
 }
 
