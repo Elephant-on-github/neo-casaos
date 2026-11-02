@@ -281,6 +281,11 @@ DownloadAndInstallCasaOS() {
         ${sudo_cmd} rm -rf /var/lib/casaos/www/*
     fi
 
+    # Pre-flight: never touch / until the extracted sysroot is complete.
+    if [ ! -d "${SYSROOT_DIR}/etc" ] && [ ! -d "${SYSROOT_DIR}/usr" ] && [ ! -d "${SYSROOT_DIR}/var" ]; then
+        Show 1 "Extracted sysroot looks incomplete, aborting before install"
+    fi
+
     ${sudo_cmd} cp -rf "${SYSROOT_DIR}"/* / || Show 1 "Failed to install CasaOS"
 
     SETUP_SCRIPT_DIR=$(realpath -e "${BUILD_DIR}"/scripts/setup/script.d || Show 1 "Failed to find setup script directory")
@@ -328,5 +333,7 @@ write_installed_state() {
 
 Check_Dependency
 Check_Arch
+
+trap 'rm -rf "${TMP_DIR:-}"' EXIT
 
 DownloadAndInstallCasaOS
