@@ -148,7 +148,7 @@ Check_Arch() {
     # must match the releases byte-for-byte (arm-7, not armv7)
     readonly CASA_PACKAGES=(
         "${NEO_REPO}/neo-casaos-gateway/releases/download/v0.4.10/linux-${TARGET_ARCH}-casaos-gateway-v0.4.10.tar.gz"
-        "${NEO_REPO}/neo-casaos/releases/download/v0.4.22/linux-${TARGET_ARCH}-casaos-v0.4.22.tar.gz"
+        "${NEO_REPO}/neo-casaos/releases/download/v0.4.23/linux-${TARGET_ARCH}-casaos-v0.4.23.tar.gz"
         "${NEO_REPO}/neo-casaos-ui/releases/download/v0.4.52/linux-all-casaos-v0.4.52.tar.gz"
         "${UPSTREAM_REPO}/CasaOS-MessageBus/releases/download/v0.4.4-3-alpha2/linux-${TARGET_ARCH}-casaos-message-bus-v0.4.4-3-alpha2.tar.gz"
         "${UPSTREAM_REPO}/CasaOS-UserService/releases/download/v0.4.8/linux-${TARGET_ARCH}-casaos-user-service-v0.4.8.tar.gz"
@@ -450,7 +450,7 @@ WriteInstalledState() {
     # the gateway at runtime.
     local state_file="/etc/casaos/installed.json"
     ${sudo_cmd} mkdir -p "$(dirname "${state_file}")"
-    printf '{"backend":"0.4.22","gateway":"0.4.10","ui":"0.4.52"}\n' | ${sudo_cmd} tee "${state_file}" >/dev/null
+    printf '{"backend":"0.4.23","gateway":"0.4.10","ui":"0.4.52"}\n' | ${sudo_cmd} tee "${state_file}" >/dev/null
     Show 0 "Installed versions recorded."
 }
 
