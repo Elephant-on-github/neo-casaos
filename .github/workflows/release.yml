@@ -65,6 +65,12 @@ jobs:
           OneDriveSecret: ${{ secrets.OneDriveSecret }}
           OneDrivePublic: ${{ secrets.OneDrivePublic }}
 
+      - name: Publish release
+        if: success()
+        run: gh release edit "${GITHUB_REF/refs\/tags\//}" --draft=false --latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Notify neo-casaos manifest bump
         if: success()
         continue-on-error: true
